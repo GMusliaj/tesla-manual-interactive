@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#eef0f2">
+  <link rel="icon" href="data:,">
+  <title>Model Y Juniper · Interaktiver Rundgang</title>
+  <meta name="description" content="Das Model Y Juniper in 3D entdecken: Türen, Cockpit, Licht, Laden, Frunk und Notentriegelung. Mit Übungen und Tesla-Originalquellen.">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./operations.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
+</head>
+<body>
+<a class="skip" href="#guide">Zum Rundgang</a>
+<header class="topbar">
+  <a class="wordmark" href="./" aria-label="Model Y Rundgang Start"><span class="mark" aria-hidden="true">Y</span> OWNER'S ATLAS <span class="edition">/ JUNIPER</span></a>
+  <nav aria-label="Informationen"><div class="language-switch" role="group" aria-label="Language / Sprache"><button data-language="de" aria-pressed="true" lang="de" aria-label="Deutsch">DE</button><button data-language="en" aria-pressed="false" lang="en" aria-label="English">EN</button></div><button id="referenceOpen">Tesla-Referenzen <span aria-hidden="true">↗</span></button><button id="aboutOpen" aria-label="Quellen und Modellhinweise">Info & Quellen</button></nav>
+</header>
+<main class="workspace">
+  <section class="studio" aria-labelledby="vehicleTitle">
+    <div class="identity"><p class="eyebrow">DEIN AUTO. RÄUMLICH ERKLÄRT.</p><h1 id="vehicleTitle">MODEL Y <span>Juniper</span></h1><p class="trim">Premium Long Range AWD <span>·</span> Generation 2025+</p></div>
+    <div id="scene" class="scene"></div>
+    <div id="hotspots" class="hotspots" aria-label="Lernorte am Fahrzeug"></div>
+    <div id="loading" class="loading" role="status"><span class="loader"></span><strong>Juniper wird vorbereitet</strong><span id="loadPercent">3D-Modell laden …</span></div>
+    <div id="renderError" class="render-error" hidden><img hidden alt="Offizielles Tesla-Foto des Model Y Juniper"><p>Die Originalquellen bleiben verfügbar.</p><a id="assetSources" href="./sources.html">Quellen & Lizenzen ↗</a><button id="retry">3D erneut laden</button></div>
+    <div class="scene-tools" role="group" aria-label="Darstellung"><button id="lighting" aria-pressed="false"><span class="sun" aria-hidden="true">◐</span> Abendlicht</button><button id="labelsToggle" aria-pressed="true">Lernpunkte an</button></div>
+    <div class="cabin-views" role="group" aria-label="Innenraumansichten"><button data-cabin-view="cabin" aria-pressed="true">Cockpit</button><button data-cabin-view="cabinWheel" aria-pressed="false">Lenkrad</button><button data-cabin-view="cabinRear" aria-pressed="false">Rücksitze</button><button data-cabin-view="cabinScreen" aria-pressed="false">Hinteres Display</button></div>
+    <div class="viewbar"><div class="views" role="group" aria-label="Kameraansichten"><button data-view="overview" aria-pressed="true">Perspektive</button><button data-view="front" aria-pressed="false">Front</button><button data-view="side" aria-pressed="false">Seite</button><button data-view="rear" aria-pressed="false">Heck</button><button data-view="cabin" aria-pressed="false">Innenraum</button></div><div class="zoom" role="group" aria-label="Kamera bewegen"><button id="orbitLeft" aria-label="Nach links drehen">↶</button><button id="orbitRight" aria-label="Nach rechts drehen">↷</button><button id="zoomOut" aria-label="Verkleinern">−</button><button id="zoomIn" aria-label="Vergrößern">+</button></div></div>
+    <div class="scene-footer"><span id="sceneHint">Ziehen zum Drehen · Scrollen oder zwei Finger zum Zoomen</span><span class="model-label">3D-Studie · BloxBloger</span></div>
+  </section>
+  <aside class="guide" id="guide" aria-labelledby="guideTitle">
+    <div class="guide-heading"><span class="eyebrow" id="chapterLabel">DEIN ERSTER RUNDGANG</span><span id="stepLabel">6 Stationen</span></div>
+    <div id="stepProgress" class="step-progress" aria-hidden="true"></div>
+    <div id="lessonContent"></div>
+    <div class="guide-bottom"><div class="guide-navigation"><button id="previous" aria-label="Vorheriger Schritt" hidden>←</button><button id="next" class="primary">Rundgang starten <span aria-hidden="true">→</span></button></div><a id="manualLink" href="https://www.tesla.com/ownersmanual/modely/de_de/" target="_blank" rel="noopener">Im Tesla-Handbuch nachlesen ↗</a></div>
+  </aside>
+  <nav class="chapters" id="chapters" aria-label="Stationen des Rundgangs"></nav>
+</main>
+<footer class="page-footer"><span>Unabhängige Lernhilfe · Im Stand erkunden. Fahrzeuganzeige und Handbuch sind maßgeblich.</span><span id="progressText" role="status">0 von 6 Stationen geübt</span></footer>
+<dialog id="detailDialog" aria-labelledby="detailTitle">
+  <div class="dialog-heading"><div><span class="eyebrow" id="detailLabel">TESLA ORIGINAL</span><h2 id="detailTitle">Model Y Juniper</h2></div><button data-close="detailDialog" class="close" aria-label="Detail schließen">×</button></div>
+  <div id="referenceTabs" class="reference-tabs" role="group" aria-label="Tesla-Referenzansichten" hidden><button data-ref="front">Front</button><button data-ref="side">Seite</button><button data-ref="rear">Heck</button><button data-ref="wheel">Räder</button><button data-ref="interior">Innenraum</button><button data-ref="seats">Rücksitze</button></div>
+  <img id="detailImage" alt="">
+  <p id="detailText"></p><a id="detailSource" target="_blank" rel="noopener">Tesla-Originalquelle ↗</a>
+</dialog>
+<dialog id="aboutDialog" aria-labelledby="aboutTitle">
+  <div class="dialog-heading"><div><span class="eyebrow">TRANSPARENZ</span><h2 id="aboutTitle">Das Modell & die Quellen.</h2></div><button data-close="aboutDialog" class="close" aria-label="Informationen schließen">×</button></div>
+  <div id="aboutContent"></div>
+  <button id="resetProgress">Lernfortschritt zurücksetzen</button>
+</dialog>
+<div id="announce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+<script type="module" src="./app.js"></script>
+</body>
+</html>

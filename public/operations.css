@@ -1,0 +1,21 @@
+.operation-panel{padding:16px;margin:18px 0;background:linear-gradient(135deg,#edf5ff,#f6f9fc);border:1px solid #c8d8ed;border-radius:10px}
+.operation-panel .eyebrow{font-size:9px;line-height:1.5}
+.operation-panel .operation-status{font-size:12px;line-height:1.5;margin:0 0 12px;color:#284b70}
+.operation-actions{display:grid;gap:7px}.operation-actions button{padding:10px 12px;text-align:left;font-size:12px;line-height:1.4;border:1px solid #c3d0e1;border-radius:6px;background:white}
+.operation-actions button[aria-pressed=true]{background:#244b80;color:white;border-color:#244b80}
+.operation-actions button:disabled{opacity:.55;cursor:default}
+.connection-film{margin-top:10px;width:100%;min-height:44px;padding:10px 12px;border:1px solid #244b80;border-radius:6px;background:#244b80;color:#fff;font:inherit;font-size:12px;text-align:left}
+.studio .identity{transition:opacity .4s}
+.studio:has(.scene:is([data-connection="approach"],[data-connection="insert"],[data-connection="hold"],[data-shot="chargeClose"])) .identity{opacity:0}
+@media(prefers-reduced-motion:reduce){.studio .identity{transition:none}}
+.operation-footer{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:10px 0 5px;font-size:10px;color:#24634e}
+.operation-reset{background:none;border:0;text-decoration:underline;font-size:10px;padding:0}
+.operation-panel small{display:block;font-size:10px;line-height:1.5;color:#627186}
+.operation-panel .operation-note{font-size:11px;line-height:1.55;margin:10px 0}
+.condition select{margin-top:12px;width:100%;min-height:44px;border:1px solid #bac9de;background:white;border-radius:5px;padding:8px;font:inherit;font-size:12px;color:#263b53}
+.chapters{grid-template-columns:repeat(7,minmax(0,1fr))}
+@media(max-width:760px){.chapters{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.render-error{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;line-height:1.7}
+.render-error p{max-width:440px;margin:0}.render-error a{color:var(--blue);font-weight:600}
+.studio:has(.scene[data-state="unavailable"]) .scene-tools,.studio:has(.scene[data-state="unavailable"]) .viewbar{display:none}
+.studio:has(.scene[data-state="unavailable"]) .render-error{inset:180px 32px 70px}

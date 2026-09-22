@@ -1,0 +1,117 @@
+{
+  "rights": "Tesla images remain copyright Tesla. Screenshots provided by the user on 2026-09-20, retained unchanged; German text embedded in them is preserved in both locales, with translated captions.",
+  "screenshots": [
+    {
+      "file": "references/de-config-front.png",
+      "source": "https://www.tesla.com/de_de/modely/design",
+      "view": "front"
+    },
+    {
+      "file": "references/de-config-side.png",
+      "source": "https://www.tesla.com/de_de/modely/design",
+      "view": "side"
+    },
+    {
+      "file": "references/de-config-rear.png",
+      "source": "https://www.tesla.com/de_de/modely/design",
+      "view": "rear"
+    },
+    {
+      "file": "references/de-config-wheel.png",
+      "source": "https://www.tesla.com/de_de/modely/design",
+      "view": "wheel"
+    },
+    {
+      "file": "references/de-config-interior-white.png",
+      "source": "https://www.tesla.com/de_de/modely/design",
+      "view": "interior"
+    },
+    {
+      "file": "references/de-config-seats-white.png",
+      "source": "https://www.tesla.com/de_de/modely/design",
+      "view": "seats"
+    }
+  ],
+  "manuals": {
+    "de": "https://www.tesla.com/ownersmanual/modely/de_de/",
+    "en": "https://www.tesla.com/ownersmanual/modely/en_eu/"
+  },
+  "illustrations": [
+    {
+      "file": "references/door-handle.gif",
+      "source": "https://www.tesla.com/ownersmanual/modely/en_eu/GUID-7A32EC01-A17E-42CC-A15B-2E0A39FD07AB.html"
+    },
+    {
+      "file": "references/frunk-close.png",
+      "source": "https://www.tesla.com/ownersmanual/modely/en_eu/GUID-356E0168-47E5-400F-AD83-4F1B86C7D991.html"
+    },
+    {
+      "file": "references/emergency-front.png",
+      "source": "https://www.tesla.com/ownersmanual/modely/en_eu/GUID-A7A60DC7-E476-4A86-9C9C-10F4A276AB8B.html"
+    },
+    {
+      "file": "references/juniper-charge-port.jpg",
+      "source": "https://www.tesla.com/ownersmanual/images/GUID-378D5E1E-1DB4-4178-8616-9A7C3155DD2A-online-en-US.jpg",
+      "use": "User-supplied Juniper charging illustration, shown unchanged in both language versions; downloaded from Tesla's official tesla.cn manual image mirror."
+    }
+  ],
+  "modellingReferences": [
+    {
+      "source": "https://de.tesery.com/cdn/shop/files/Model_Y_Juniper_Auto_Power_Frunk_System.gif?v=1764665088&width=1946",
+      "publisher": "Tesery",
+      "use": "Visual reference for the Juniper frunk opening, surround and hood movement. The video advertises an aftermarket powered mechanism; the guide retains manual hood operation.",
+      "rights": "Linked only. Downloaded reference media are not bundled or relicensed."
+    },
+    {
+      "source": "https://www.torque-alliance.com/cdn/shop/files/TJ377_TeslaModelY2025Juniper_FrontTrunkMat_PRR_03.jpg?v=1765972206&width=1600",
+      "publisher": "Torque Alliance",
+      "use": "Visual reference for the rounded tub, recessed floor, weather seal, front trim and rear service panel. The accessory mat shown is not represented as standard equipment.",
+      "rights": "Linked only. Downloaded reference media are not bundled or relicensed."
+    },
+    {
+      "source": "https://www.teslaoracle.com/wp-content/uploads/2025/01/Tesla-Model-Y-Juniper-Rear-Light.jpg",
+      "publisher": "Tesla Oracle",
+      "use": "Primary visual reference for the Juniper recessed reflector, full-width red wash, overhanging dark brow, smoked corner lenses and clear lower inserts.",
+      "rights": "Linked only. Downloaded reference media are not bundled or relicensed."
+    },
+    {
+      "source": "https://www.hansshow.com/cdn/shop/files/3_f3901481-556b-4ca2-9ec2-dac2d2bd64e6.jpg?v=1776763428&width=1200",
+      "publisher": "Hansshow",
+      "use": "User-supplied comparison image. Its narrow outline-style lighting differs from the broad reflected Juniper band; that outline is not reproduced as the factory design.",
+      "rights": "Linked only. Downloaded reference media are not bundled or relicensed."
+    },
+    {
+      "source": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQS-zu1KQL0kPJRiBXmZ3YlOnv646kb3evc4-BgP0p5uoVkfREHYg9OI2s&s=10",
+      "publisher": "Google image thumbnail; original publisher unverified",
+      "use": "User-supplied secondary reference for the broad red rear band. The floor reflection in this indoor photograph is not represented as a measured light pattern.",
+      "rights": "Linked only. Original provenance unverified; no redistribution licence asserted."
+    },
+    {
+      "source": "https://hips.hearstapps.com/hmg-prod/images/2026-tesla-model-y-long-range-awd-169-688bcd7a40fd6.jpg?crop=0.668xw:1.00xh;0.215xw,0&resize=1200:*",
+      "publisher": "Hearst",
+      "use": "User-supplied white-interior reference for the steering wheel, dashboard, landscape touchscreen and covered console with dual phone pads.",
+      "rights": "Linked only. Reference photograph remains excluded and is not relicensed."
+    },
+    {
+      "source": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBBH1yYhOOSdVafZVjScjdu--uDNou3QvdRbfTKOLmgGr75FpfGSAxOYqc&s=10",
+      "publisher": "Google image thumbnail; original publisher unverified",
+      "use": "User-supplied frontal cockpit comparison for wheel spokes, screen placement and console layout.",
+      "rights": "Linked only. Original provenance unverified; no redistribution licence asserted."
+    }
+  ],
+  "photographs": {
+    "source": "https://www.tesla.com/learn/introducing-new-model-y",
+    "files": [
+      "references/juniper-front.jpg",
+      "references/juniper-rear.jpg",
+      "references/juniper-interior.jpg"
+    ]
+  },
+  "cabinDocumentation": {
+    "checked": "2026-09-22",
+    "interior": "https://www.tesla.com/ownersmanual/modely/en_eu/GUID-A5F2B9D0-E7C8-40F5-9642-58F3657B123E.html",
+    "steeringWheel": "https://www.tesla.com/ownersmanual/modely/en_eu/GUID-DEB259CC-ABAC-4BFC-8D10-B7B1BBCFCB1F.html",
+    "touchscreen": "https://www.tesla.com/ownersmanual/modely/en_eu/GUID-518C51C1-E9AC-4A68-AE12-07F4FF8C881E.html",
+    "shifting": "https://www.tesla.com/ownersmanual/modely/en_eu/GUID-E9B387D7-AFEF-4AAF-8685-4FE71E09287D.html"
+  }
+}

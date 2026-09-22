@@ -1,0 +1,16 @@
+node_modules/
+.tmp/
+test-results/
+playwright-report/
+coverage/
+dist/
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Optional third-party assets stay local. Source links and credits remain tracked.
+/public/references/
+/public/models/*
+!/public/models/CREDITS.md
+/public/assets.json
