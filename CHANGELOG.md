@@ -32,8 +32,7 @@ All notable changes to this project are documented in this file.
 
 ### Fixed
 
-- Rebuilt the steering wheel against the supplied cockpit photographs: rounded leather grip, inset airbag panel, curved silver-edged control wings, recessed scroll rollers and a joined lower spoke. Added a dedicated German/English wheel view and included it in the README animation.
-- Refined the continuous rear bench, seat bolsters, headrests, dashboard and door pulls; corrected intersecting upholstery overlays and uneven curved-surface normals. Adjusted cabin lighting and framing, and replaced the touchscreen's placeholder vehicle drawing with a runtime render of the loaded Model Y. Reference images remain excluded.
+- Restored the previous cabin geometry, materials, camera views and README animation, reverting the latest interior revision in a new commit while preserving existing history.
 - Reconstructed the Juniper cockpit from the supplied white-interior photographs and Tesla European manual: replaced the conventional dashboard, wheel and gear lever with a continuous dashboard, three-spoke wheel, central landscape touchscreen, dual phone pads, white console surround and armrest, shaped perforated seats, stitched inserts, dark seatback shells, door pulls and rear passenger display. Added cockpit, rear-seat and rear-display views in German and English; reference photographs stay excluded and their sources are listed.
 - Improved front-glass visibility while preserving rear privacy tint and dark controls; removed the effective 30 fps render cap, reused animation buffers and cached settled shadows. Camera buttons ease into position, exterior camera changes follow an orbit, and entering the cabin uses a brief fade to avoid travelling through body panels. Added browser verification and refreshed the README recording.
 

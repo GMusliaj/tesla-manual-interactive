@@ -32,7 +32,5 @@ test('landscape display and paired sloping phone pads fit above the covered cons
   assert.equal(sidewall.material, armrest.material, 'the curved console sidewall uses the same white upholstery');
   assert.equal(tray.getObjectByName('phone-tray-frame').material, armrest.material, 'the phone tray has a white surround');
   assert.ok(console.getObjectByName('console-closed-cover').material.color.r < .05, 'storage lids remain dark');
-  const bounds=new Box3().setFromObject(console);
-  assert.ok(bounds.max.x < .14 && bounds.min.x > -.14, 'console must leave clearance to the rebuilt front seats at ±.147 m');
-  assert.ok(bounds.max.x-bounds.min.x > .24, 'console surround must accommodate two phone pads at realistic width');
+  assert.ok(new Box3().setFromObject(console).max.x < .115 && new Box3().setFromObject(console).min.x > -.115, 'console must fit between the source seats');
 });

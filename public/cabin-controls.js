@@ -1,6 +1,5 @@
 import * as T from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
-import { createSteeringWheel } from './steering-wheel.js';
 
 // The imported interior contains a conventional dashboard, gear lever and
 // wheel. These bounds identify complete disconnected source islands only.
@@ -39,38 +38,6 @@ function screenTexture() {
   texture.anisotropy = 4; return texture;
 }
 
-// Draw the project's actual vehicle into the illustrative parking UI once.
-// The tiny preview is generated at runtime, never fetched or stored as an asset.
-export function updateCabinVehiclePreview(renderer, scene, car) {
-  const surface=car.getObjectByName('screen-display'),texture=surface?.material?.map,canvas=texture?.image;
-  if(typeof document==='undefined'||!canvas?.getContext)return false;
-  const width=512,height=420,preview=new T.Scene();preview.environment=scene.environment;preview.environmentIntensity=.7;
-  const copy=car.clone(true);copy.traverse(object=>{object.castShadow=false;object.receiveShadow=false;if(object.name==='center-touchscreen'||object.name==='rear-console-display')object.visible=false;});preview.add(copy);
-  preview.add(new T.HemisphereLight(0xf1f3f7,0x84888e,2.1));
-  const key=new T.DirectionalLight(0xfff9f1,2.5);key.position.set(-3,6,-5);preview.add(key);
-  const fill=new T.DirectionalLight(0xdbe7f5,1.2);fill.position.set(4,2,1);preview.add(fill);
-  const camera=new T.OrthographicCamera(-2.6,2.6,2.6*height/width,-2.6*height/width,.1,40);camera.position.set(-4.8,3.15,-6.3);camera.lookAt(0,.73,0);
-  const target=new T.WebGLRenderTarget(width,height,{samples:4});target.texture.colorSpace=T.SRGBColorSpace;
-  const previous={target:renderer.getRenderTarget(),face:renderer.getActiveCubeFace(),level:renderer.getActiveMipmapLevel(),viewport:renderer.getViewport(new T.Vector4()),scissor:renderer.getScissor(new T.Vector4()),scissorTest:renderer.getScissorTest(),clear:renderer.getClearColor(new T.Color()),alpha:renderer.getClearAlpha(),autoClear:renderer.autoClear,xr:renderer.xr.enabled};
-  try{
-    renderer.xr.enabled=false;renderer.autoClear=true;renderer.setRenderTarget(target);renderer.setViewport(0,0,width,height);renderer.setScissorTest(false);renderer.setClearColor(0xf5f6f5,0);renderer.clear();renderer.render(preview,camera);
-    const pixels=new Uint8Array(width*height*4);renderer.readRenderTargetPixels(target,0,0,width,height,pixels);
-    const image=document.createElement('canvas');image.width=width;image.height=height;const context=image.getContext('2d'),frame=context.createImageData(width,height);
-    for(let row=0;row<height;row++)frame.data.set(pixels.subarray((height-row-1)*width*4,(height-row)*width*4),row*width*4);
-    context.putImageData(frame,0,0);
-    const c=canvas.getContext('2d');c.fillStyle='#f5f6f5';c.fillRect(0,126,380,450);
-    // A soft contact shadow grounds the vehicle without another shadow map.
-    c.save();c.translate(190,383);c.scale(1,.30);const gradient=c.createRadialGradient(0,0,15,0,0,153);gradient.addColorStop(0,'#a9afb34a');gradient.addColorStop(1,'#a9afb300');c.fillStyle=gradient;c.fillRect(-154,-154,308,308);c.restore();
-    c.drawImage(image,3,167,374,307);
-    c.strokeStyle='#687178';c.lineWidth=2;c.beginPath();c.roundRect(182,142,18,15,3);c.stroke();c.beginPath();c.arc(191,141,6,Math.PI,0);c.stroke();
-    c.strokeStyle='#cdd2d6';c.lineWidth=1;c.beginPath();c.moveTo(54,504);c.lineTo(324,504);c.stroke();
-    for(const x of [93,191,289]){c.strokeStyle='#636d74';c.lineWidth=2;c.beginPath();c.roundRect(x-10,526,20,12,3);c.stroke();c.beginPath();c.moveTo(x-8,527);c.lineTo(x-6,521);c.lineTo(x+6,521);c.lineTo(x+8,527);c.stroke();}
-    texture.needsUpdate=true;return true;
-  }finally{
-    renderer.setRenderTarget(previous.target,previous.face,previous.level);renderer.setViewport(previous.viewport);renderer.setScissor(previous.scissor);renderer.setScissorTest(previous.scissorTest);renderer.setClearColor(previous.clear,previous.alpha);renderer.autoClear=previous.autoClear;renderer.xr.enabled=previous.xr;target.dispose();
-  }
-}
-
 // Small repeating material samples are generated here rather than taken from
 // the reference photographs. Their scale stays subtle in the cabin close-up.
 function surfaceTexture(kind) {
@@ -92,12 +59,12 @@ export function createCabinControls(car) {
   const root = new T.Group(); root.name = 'juniper-cabin-controls'; car.add(root);
   const grain = surfaceTexture('leather');
   const leather = new T.MeshStandardMaterial({ name: 'control_leather', color: '#202124', roughness: .82, bumpMap: grain, bumpScale: .0003 });
-  const white = new T.MeshStandardMaterial({ name: 'white_console_upholstery', color: '#dad7d2', roughness: .72, bumpMap: grain, bumpScale: .00012 });
+  const white = new T.MeshStandardMaterial({ name: 'white_console_upholstery', color: '#d9d6cf', roughness: .78, bumpMap: grain, bumpScale: .00018 });
   const thread = new T.MeshStandardMaterial({ name: 'upholstery_thread', color: '#b5b1a9', roughness: 1 });
   const satin = new T.MeshStandardMaterial({ name: 'console_satin', color: '#22262b', roughness: .52, metalness: .12 });
   const rubber = new T.MeshStandardMaterial({ name: 'phone_mat', color: '#14171b', roughness: .98 });
   const silver = new T.MeshStandardMaterial({ name: 'control_edge', color: '#a3adb3', roughness: .29, metalness: .72 });
-  const fabric = new T.MeshStandardMaterial({ name: 'pale_dash_trim', color: '#888580', roughness: .97, bumpMap: surfaceTexture('fabric'), bumpScale: .00035 });
+  const fabric = new T.MeshStandardMaterial({ name: 'pale_dash_trim', color: '#b4b2ac', roughness: .98, bumpMap: surfaceTexture('fabric'), bumpScale: .0007 });
   const blue = new T.MeshStandardMaterial({ name: 'cabin_ambient_strip', color: '#396983', emissive: '#1d5676', emissiveIntensity: .5, roughness: .5 });
   function mesh(name, geometry, material, position, parent = root) {
     const m = new T.Mesh(geometry, material); m.name = name; if (position) m.position.set(...position);
@@ -109,40 +76,45 @@ export function createCabinControls(car) {
   function line(name, points, radius, material, parent = root, segments = 40) {
     return mesh(name, new T.TubeGeometry(new T.CatmullRomCurve3(points.map(p => new T.Vector3(...p))), segments, radius, 6, false), material, null, parent);
   }
-
-  // Sweep one gently curved cross-section across the cabin. This keeps the
-  // dashboard's highlights continuous instead of stacking rectangular boxes.
-  function dash(name, profile, material, width = 1.475) {
-    const section = new T.CatmullRomCurve3(profile.map(([y,z]) => new T.Vector3(0,y,z)), true, 'centripetal');
-    const positions=[],uv=[],indices=[],nx=64,ns=48;
-    for(let i=0;i<=nx;i++)for(let j=0;j<=ns;j++){
-      const u=i/nx,x=(u-.5)*width,p=section.getPoint(j/ns);
-      const bend=.047*Math.pow(Math.abs(x)/(width/2),2);
-      positions.push(x,p.y-.009*Math.pow(Math.abs(x)/(width/2),4),p.z-bend);
-      uv.push(u,j/ns);
-    }
-    for(let i=0;i<nx;i++)for(let j=0;j<ns;j++){
-      const a=i*(ns+1)+j,b=a+ns+1;indices.push(a,b,a+1,a+1,b,b+1);
-    }
-    // End caps are hidden by the A-pillar/door join but close the shell for shadows.
-    for(const i of [0,nx])for(let j=1;j<ns-1;j++){
-      const a=i*(ns+1);if(i===0)indices.push(a,a+j+1,a+j);else indices.push(a,a+j,a+j+1);
-    }
-    const geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.Float32BufferAttribute(positions,3));geometry.setAttribute('uv',new T.Float32BufferAttribute(uv,2));geometry.setIndex(indices);geometry.computeVertexNormals();
-    return mesh(name,geometry,material);
+  function plate(name, points, depth, material, parent, z = 0) {
+    const shape = new T.Shape(); shape.moveTo(...points[0]); for (const point of points.slice(1)) shape.lineTo(...point); shape.closePath();
+    return mesh(name, new T.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: .003, bevelThickness: .003, curveSegments: 8 }), material, [0, 0, z], parent);
   }
 
   // A low uninterrupted dashboard replaces the source's central stack.
-  dash('dashboard-upper',[[1.063,-.712],[1.104,-.810],[1.112,-1.057],[1.087,-1.093],[1.025,-1.092],[1.022,-.774]],leather);
-  dash('dashboard-trim',[[1.058,-.710],[1.052,-.739],[.997,-.738],[.987,-.703],[1.005,-.695]],fabric);
-  line('dashboard-trim-lower-edge', [[-.727,.982,-.747],[-.50,.988,-.721],[0,.991,-.698],[.50,.988,-.721],[.727,.982,-.747]], .0011, satin);
-  dash('dashboard-air-slot',[[.983,-.705],[.984,-.731],[.964,-.731],[.965,-.704]],rubber,1.465);
-  dash('dashboard-lower',[[.955,-.719],[.952,-.858],[.828,-.849],[.832,-.748],[.887,-.712]],leather,1.445);
-  line('glovebox-lid-seam', [[.149,.918,-.718],[.146,.860,-.737],[.628,.850,-.773],[.655,.881,-.756]], .00055, rubber);
-  line('dashboard-ambient-strip', [[-.732,1.050,-.755],[-.54,1.057,-.734],[0,1.060,-.708],[.54,1.057,-.734],[.732,1.050,-.755]], .0011, blue);
-  line('dashboard-upper-seam', [[-.715,1.081,-.811],[-.38,1.091,-.782],[0,1.094,-.771],[.38,1.091,-.782],[.715,1.081,-.811]],.00048,thread);
+  box('dashboard-upper', [1.43, .12, .31], [0, 1.053, -.921], leather, .035);
+  box('dashboard-trim', [1.41, .072, .06], [0, 1.018, -.732], fabric, .014);
+  line('dashboard-trim-lower-edge', [[-.697,.980,-.709],[0,.980,-.700],[.697,.980,-.709]], .0015, silver);
+  box('dashboard-air-slot', [1.39, .018, .033], [0, .968, -.711], rubber, .004);
+  box('dashboard-lower', [1.40, .15, .13], [0, .883, -.797], leather, .025);
+  line('glovebox-lid-seam', [[.148,.900,-.728],[.148,.839,-.728],[.631,.839,-.728],[.657,.860,-.728]], .0008, rubber);
+  line('dashboard-ambient-strip', [[-.704,1.057,-.732],[-.54,1.059,-.714],[0,1.060,-.702],[.54,1.059,-.714],[.704,1.057,-.732]], .0018, blue);
 
-  const wheel = createSteeringWheel(root);
+  const wheel = new T.Group(); wheel.name = 'steering-wheel'; wheel.position.set(-.4, 1.105, -.462); wheel.rotation.x = -.20; root.add(wheel);
+  const rim = [[0,.172,0],[.115,.137,0],[.168,.055,0],[.161,-.074,0],[.10,-.141,0],[0,-.148,0],[-.10,-.141,0],[-.161,-.074,0],[-.168,.055,0],[-.115,.137,0]].map(p=>new T.Vector3(...p));
+  mesh('steering-rim', new T.TubeGeometry(new T.CatmullRomCurve3(rim, true, 'centripetal'), 112, .018, 10, true), leather, null, wheel);
+  const innerStitch = rim.map(point => new T.Vector3(point.x * .91, point.y * .91, .010));
+  mesh('steering-rim-inner-stitch', new T.TubeGeometry(new T.CatmullRomCurve3(innerStitch, true, 'centripetal'), 112, .0006, 4, true), thread, null, wheel);
+  const column = mesh('steering-column', new T.CylinderGeometry(.037, .047, .14, 20), leather, [0, 0, -.091], wheel); column.rotation.x = Math.PI / 2;
+  line('turn-signal-stalk', [[-.035,-.025,-.075],[-.12,-.030,-.067],[-.183,-.035,-.058]], .0065, leather, wheel, 16);
+  box('turn-signal-stalk-tip', [.035,.016,.022], [-.188,-.035,-.058], leather, .005, wheel);
+  plate('steering-left-spoke', [[-.151,.044],[-.063,.033],[-.046,-.035],[-.154,-.024]], .013, satin, wheel, .003);
+  plate('steering-right-spoke', [[.151,.044],[.154,-.024],[.046,-.035],[.063,.033]], .013, satin, wheel, .003);
+  plate('steering-lower-left-leg', [[-.060,-.042],[-.016,-.141],[-.006,-.141],[-.045,-.042]], .010, satin, wheel, -.002);
+  plate('steering-lower-right-leg', [[.060,-.042],[.045,-.042],[.006,-.141],[.016,-.141]], .010, satin, wheel, -.002);
+  line('steering-lower-metal-edge', [[-.061,-.038,.016],[-.050,-.078,.016],[0,-.143,.016],[.050,-.078,.016],[.061,-.038,.016]], .0034, silver, wheel, 32);
+  const horn = new T.Shape();
+  horn.moveTo(-.050,.048); horn.quadraticCurveTo(0,.055,.050,.048);
+  horn.quadraticCurveTo(.066,.045,.066,.020); horn.quadraticCurveTo(.064,-.005,.038,-.073);
+  horn.quadraticCurveTo(.030,-.086,.020,-.086); horn.lineTo(-.020,-.086);
+  horn.quadraticCurveTo(-.030,-.086,-.038,-.073); horn.quadraticCurveTo(-.064,-.005,-.066,.020);
+  horn.quadraticCurveTo(-.066,.045,-.050,.048);
+  mesh('steering-horn-pad', new T.ExtrudeGeometry(horn, { depth: .027, bevelEnabled: true, bevelSegments: 5, steps: 1, bevelSize: .004, bevelThickness: .004, curveSegments: 12 }), leather, [0,0,.016], wheel);
+  for (const x of [-.109, .109]) {
+    const scroll = mesh(x < 0 ? 'left-scroll-wheel' : 'right-scroll-wheel', new T.CylinderGeometry(.011, .011, .017, 20), leather, [x, .009, .028], wheel); scroll.rotation.z = Math.PI / 2;
+    for (let i = -2; i <= 2; i++) { const ridge = mesh('scroll-grip-ridge', new T.TorusGeometry(.0109, .00055, 4, 16), silver, [x + i * .003, .009, .028], wheel); ridge.rotation.y = Math.PI / 2; }
+    for (const dx of [-.019,.019]) mesh('steering-button-mark', new T.CircleGeometry(.0016, 8), silver, [x+dx,.009,.024], wheel);
+  }
 
   const display = new T.Group(); display.name = 'center-touchscreen'; display.position.set(.038, 1.102, -.548); display.rotation.x = -.16; root.add(display);
   box('screen-housing', [.365, .233, .017], [0,0,0], satin, .012, display);
@@ -151,7 +123,7 @@ export function createCabinControls(car) {
   mesh('screen-display', new T.PlaneGeometry(.349, .218), screen, [0,0,.0103], display).castShadow = false;
   box('screen-mount', [.07,.105,.06], [.038,.973,-.638], leather, .013);
 
-  const console = new T.Group(); console.name = 'center-console'; console.scale.x=1.17; root.add(console);
+  const console = new T.Group(); console.name = 'center-console'; root.add(console);
   box('console-body', [.190,.19,.82], [0,.590,-.135], leather, .028, console);
   // The side upholstery is one continuous rising shell, not disconnected
   // rails. A smoothly curved profile joins the armrest to the phone-pad ramp.
@@ -179,7 +151,7 @@ export function createCabinControls(car) {
   const armrest = box('console-armrest', [.204,.070,.253], [0,.775,.157], white, .025, console);
   line('armrest-stitching', [[-.093,.794,.044],[-.099,.795,.075],[-.099,.795,.249],[-.079,.795,.272],[.079,.795,.272],[.099,.795,.249],[.099,.795,.075],[.093,.794,.044]], .00055, thread, console, 72);
   line('armrest-double-stitching', [[-.090,.794,.045],[-.096,.795,.077],[-.096,.795,.247],[-.076,.795,.269],[.076,.795,.269],[.096,.795,.247],[.096,.795,.077],[.090,.794,.045]], .00045, thread, console, 72);
-  const tray = new T.Group(); tray.name = 'dual-phone-charger'; tray.position.set(0,.819,-.408); tray.rotation.x = -.72; console.add(tray);
+  const tray = new T.Group(); tray.name = 'dual-phone-charger'; tray.position.set(0,.819,-.408); tray.rotation.x = -.59; console.add(tray);
   box('phone-tray-frame', [.210,.261,.026], [0,0,0], white, .014, tray);
   box('phone-tray-trim', [.196,.247,.009], [0,0,.014], silver, .011, tray);
   box('phone-tray-insert', [.191,.241,.009], [0,0,.020], rubber, .010, tray);

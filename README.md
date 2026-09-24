@@ -13,8 +13,8 @@ The animation records the local 3D experience entirely in English: the white
 cabin with its steering wheel, central touchscreen, phone pads, sculpted seats
 and rear passenger display, reflected
 rear lights in evening mode, close-up charging connector insertion and opening frunk.
-Choose **Interior / Innenraum** in the viewer, then **Cockpit**, **Steering wheel /
-Lenkrad**, **Rear seats / Rücksitze** or **Rear display / Hinteres Display** to inspect the cabin.
+Choose **Interior / Innenraum** in the viewer, then **Cockpit**, **Rear seats /
+Rücksitze** or **Rear display / Hinteres Display** to inspect both rows.
 Rendered vehicle: [2025 Tesla Model Y by BloxBloger](https://sketchfab.com/3d-models/2025-tesla-model-y-619601e7800d418da5922c4fa7833f74),
 adapted with white materials, reconstructed cabin controls, lighting and instructional animations.
 The GIF is under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/),

@@ -7,7 +7,6 @@ import { createOperations } from './operations-3d.js';
 import { chargeFilmAt } from './charge-film.js';
 import { createRearLights } from './rear-lights.js';
 import { createCabin } from './cabin.js';
-import { updateCabinVehiclePreview } from './cabin-controls.js';
 
 // +Y up, -Z front, -X driver side (left-hand drive).
 export const SHOTS = {
@@ -16,8 +15,7 @@ export const SHOTS = {
   rear: { position: [-5.3, 2.4, 6.3], target: [0, .85, .4] },
   side: { position: [-8.8, 2, 0], target: [0, .8, 0] },
   doors: { position: [-4.5, 1.9, -2.1], target: [-.55, 1.03, -.32] },
-  cabin: { position: [.48,1.38,-.08], target: [-.22,.99,-.33], fov:84, interior:true, limits:{radius:[.76,.88],phi:[1.04,1.28],theta:[1.10,1.40]} },
-  cabinWheel: { position: [-.36,1.25,.02], target: [-.40,1.105,-.462], fov:49, interior:true, limits:{radius:[.46,.54],phi:[1.24,1.39],theta:[-.05,.20]} },
+  cabin: { position: [.20, 1.36, -.02], target: [-.05, 1.05, -.80], fov: 76, interior: true },
   cabinRear: { position: [.40,1.40,.46], target: [-.15,1,1.09], fov:78, interior:true, limits:{radius:[.86,.96],phi:[1.06,1.26],theta:[2.27,2.51]} },
   cabinScreen: {position:[0,1.12,.69],target:[0,.71,.31],fov:68,interior:true,limits:{radius:[.54,.58],phi:[.69,.84],theta:[-.12,.12]}},
   charge: { position: [-4.6, 2.4, 5.5], target: [-.2, .85, .7] },
@@ -49,7 +47,7 @@ export async function createViewer(host, { modelUrl = './models/juniper.glb', on
   const scene = new T.Scene();
   const camera = new T.PerspectiveCamera(36, 1, .08, 80);
   const controls = new OrbitControls(camera, renderer.domElement);
-  let cameraInside=false,insideView='',nightLighting=false;
+  let cameraInside=false,insideView='';
   controls.enableDamping = true; controls.dampingFactor = .18;
   controls.enablePan = false; controls.minDistance = 2.4; controls.maxDistance = 14;
   controls.minPolarAngle = .25; controls.maxPolarAngle = Math.PI / 2 - .015;
@@ -59,30 +57,8 @@ export async function createViewer(host, { modelUrl = './models/juniper.glb', on
   const key = new T.DirectionalLight(0xfffaf0, 2.2);
   key.position.set(-3, 7, -4); key.castShadow = true; key.shadow.mapSize.set(2048, 2048);
   Object.assign(key.shadow.camera, { left: -4, right: 4, top: 5, bottom: -5, near: .1, far: 20 });
-  key.shadow.normalBias = .012; key.shadow.bias = -.0001; scene.add(key,key.target);
+  key.shadow.normalBias = .012; key.shadow.bias = -.0001; scene.add(key);
   const fill = new T.DirectionalLight(0xdce5ee, 1.1); fill.position.set(5, 3, 3); scene.add(fill);
-  function updateLighting(changeVolume=false) {
-    // Interior surfaces need a restrained fill so white upholstery retains its
-    // contour. The exterior studio remains unchanged when leaving the cabin.
-    hemi.intensity=cameraInside?(nightLighting?.12:.26):(nightLighting?.55:1.65);
-    key.intensity=cameraInside?(nightLighting?.95:2.3):(nightLighting?.8:2.2);
-    fill.intensity=cameraInside?(nightLighting?.16:.4):(nightLighting?.45:1.1);
-    scene.environmentIntensity=cameraInside?(nightLighting?.18:.38):(nightLighting?.4:1);
-    if(!changeVolume)return;
-    key.position.set(...(cameraInside?[-3,3,-2]:[-3,7,-4]));
-    key.target.position.set(0,cameraInside?.9:0,0);
-    Object.assign(key.shadow.camera,cameraInside?
-      {left:-1.6,right:1.6,top:1.7,bottom:-1.7,near:.1,far:12}:
-      {left:-4,right:4,top:5,bottom:-5,near:.1,far:20});
-    key.shadow.normalBias=cameraInside?.001:.012;
-    key.shadow.bias=cameraInside?-.00003:-.0001;
-    // The exterior light is a point-like studio source. Its hard window-frame
-    // silhouettes don't represent the diffuse light entering the cabin.
-    key.shadow.intensity=cameraInside?0:1;
-    key.shadow.camera.updateProjectionMatrix();
-    renderer.shadowMap.needsUpdate=true;
-  }
-
   const floor = new T.Mesh(new T.PlaneGeometry(200, 200), new T.ShadowMaterial({ opacity: .19 }));
   floor.rotation.x = -Math.PI / 2; floor.position.y = -.015; floor.receiveShadow = true; scene.add(floor);
   const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
@@ -123,8 +99,6 @@ export async function createViewer(host, { modelUrl = './models/juniper.glb', on
   createCabin(car);
   const rearLights=createRearLights(car);
   const operations=createOperations(scene,car);
-  updateCabinVehiclePreview(renderer,scene,car);
-  renderer.shadowMap.needsUpdate=true;
   const size = new T.Box3().setFromObject(car).getSize(new T.Vector3());
   host.dataset.triangles = Math.round(triangles); host.dataset.model = 'juniper';
   host.dataset.bounds = size.toArray().map(x=>x.toFixed(3)).join(',');
@@ -164,9 +138,7 @@ export async function createViewer(host, { modelUrl = './models/juniper.glb', on
     controls.enableDamping=true;
   }
   function cameraLimits(interior,limits) {
-    const changeVolume=cameraInside!==interior;
     cameraInside=interior;
-    if(changeVolume)updateLighting(true);
     controls.minDistance=interior?(limits?.radius[0]??.70):2.4;controls.maxDistance=interior?(limits?.radius[1]??.88):14;
     controls.minPolarAngle=interior?(limits?.phi[0]??1.10):.25;controls.maxPolarAngle=interior?(limits?.phi[1]??1.38):Math.PI/2-.015;
     controls.minAzimuthAngle=interior?(limits?.theta[0]??-.30):-Infinity;controls.maxAzimuthAngle=interior?(limits?.theta[1]??.58):Infinity;
@@ -285,7 +257,7 @@ export async function createViewer(host, { modelUrl = './models/juniper.glb', on
       if(reduced.matches){clearInertia();tween=null;camera.position.copy(position);controls.update();}
       else moveCamera(position,controls.target,camera.fov,240,'navigation');
     },
-    lighting(night){dirty=true;nightLighting=Boolean(night);updateLighting();for(const m of materials)if(m.name.includes('led'))m.emissiveIntensity=night?2:.5;rearLights.setNight(night);},
+    lighting(night){dirty=true;hemi.intensity=night?.55:1.65;key.intensity=night?.8:2.2;fill.intensity=night?.45:1.1;scene.environmentIntensity=night?.4:1;for(const m of materials)if(m.name.includes('led'))m.emissiveIntensity=night?2:.5;rearLights.setNight(night);},
     paint(hex){dirty=true;for(const m of materials)if(m.name==='exterior_paint')m.color.set(hex);},
     get camera(){return camera;}, get car(){return car;}, get renderer(){return renderer;},
     dispose(){cancelAnimationFrame(frame);reduced.removeEventListener('change',motionChanged);observer.disconnect();intersection.disconnect();controls.dispose();renderer.dispose();environment.dispose();},

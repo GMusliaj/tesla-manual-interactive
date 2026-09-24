@@ -64,8 +64,6 @@ try {
  await record('Juniper overview',1.2);
  await click('[data-view="cabin"]');await record('White cabin, steering wheel and center display',3);
  assert.equal(await page.locator('#scene').getAttribute('data-shot'),'cabin');
- await click('[data-cabin-view="cabinWheel"]');await record('Steering wheel, inset airbag and scroll controls',2.4);
- assert.equal(await page.locator('#scene').getAttribute('data-shot'),'cabinWheel');
  await click('[data-cabin-view="cabinRear"]');await record('Contoured white rear seats',1.6);
  await click('[data-cabin-view="cabinScreen"]');await record('Rear passenger display and seatback shells',1.6);
  await click('[data-view="side"]');await record('Side camera tour',1.8);

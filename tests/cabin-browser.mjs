@@ -16,33 +16,19 @@ try{
  await page.clock.install();await page.goto('http://127.0.0.1:'+server.address().port+'/');
  await page.waitForFunction(()=>document.querySelector('#scene').dataset.state==='ready',null,{timeout:60000});
  const click=async selector=>{await page.locator(selector).dispatchEvent('click');await page.clock.runFor(80);};
- const shots=['cabin','cabinWheel','cabinRear','cabinScreen'];
- const verifyView=async shot=>{
-  assert.equal(await page.locator('#scene').getAttribute('data-shot'),shot);
-  assert.equal(await page.locator('[data-view="cabin"]').getAttribute('aria-pressed'),'true');
-  assert.deepEqual(await page.locator('[data-cabin-view][aria-pressed="true"]').evaluateAll(buttons=>buttons.map(button=>button.dataset.cabinView)),[shot]);
-  const visibility=await page.evaluate(()=>{
-   const v=cabinViewer,car=v.car,shot=document.querySelector('#scene').dataset.shot;
-   const subject=car.getObjectByName(shot==='cabinWheel'?'steering-rim':shot==='cabinScreen'?'rear-screen-surface':'screen-display');
-   car.updateMatrixWorld(true);const point=subject.position.clone();subject.getWorldPosition(point);point.project(v.camera);
-   const rimPoints=[];
-   if(shot==='cabinWheel'){
-    const vertices=subject.geometry.attributes.position;
-    for(let i=0;i<vertices.count;i++)rimPoints.push(subject.localToWorld(point.fromBufferAttribute(vertices,i)).project(v.camera).toArray());
-   }
-   return {subject:subject.name,centre:point.toArray(),rimPoints,opacity:v.renderer.domElement.style.opacity,inside:v.camera.position.y<1.55,seatCount:car.getObjectByName('juniper-seats').children.filter(x=>x.name.endsWith('-seat')).length};
-  });
-  assert.equal(visibility.opacity,'1');assert.ok(visibility.inside);assert.equal(visibility.seatCount,5);
-  if(shot==='cabinWheel')assert.ok(visibility.rimPoints.every(point=>point.every(n=>Math.abs(n)<1)),'the whole steering rim must be in the camera frustum');
-  else if(shot!=='cabinRear')assert.ok(visibility.centre.every(n=>Math.abs(n)<1),'display must be in the camera frustum: '+JSON.stringify(visibility));
- };
  for(const language of ['de','en']){
   await click('[data-language="'+language+'"]');await click('[data-view="cabin"]');
   assert.equal(await page.locator('[data-view="cabin"]').textContent(),language==='de'?'Innenraum':'Interior');
-  assert.equal(await page.locator('[data-cabin-view="cabinWheel"]').textContent(),language==='de'?'Lenkrad':'Steering wheel');
-  for(const shot of shots){
+  for(const shot of ['cabin','cabinRear','cabinScreen']){
    await click('[data-cabin-view="'+shot+'"]');
-   await verifyView(shot);
+   assert.equal(await page.locator('#scene').getAttribute('data-shot'),shot);
+   const visibility=await page.evaluate(()=>{
+    const v=cabinViewer,car=v.car,screen=car.getObjectByName(document.querySelector('#scene').dataset.shot==='cabinScreen'?'rear-screen-surface':'screen-display');
+    car.updateMatrixWorld(true);const point=screen.position.clone();screen.getWorldPosition(point);point.project(v.camera);
+    return {screen:[point.x,point.y,point.z],opacity:v.renderer.domElement.style.opacity,inside:v.camera.position.y<1.55,seatCount:car.getObjectByName('juniper-seats').children.filter(x=>x.name.endsWith('-seat')).length};
+   });
+   assert.equal(visibility.opacity,'1');assert.ok(visibility.inside);assert.equal(visibility.seatCount,5);
+   if(shot!=='cabinRear')assert.ok(visibility.screen.every(p=>Math.abs(p)<1),'display must be in the camera frustum: '+JSON.stringify(visibility));
    await page.screenshot({path:'.tmp/cabin-qa/ui-'+language+'-'+shot+'.png'});
   }
   await page.locator('#scene canvas').focus();await page.keyboard.press('Home');await page.clock.runFor(80);
@@ -58,12 +44,10 @@ try{
  await page.clock.runFor(9000);
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.setViewportSize({width:390,height:844});await page.clock.runFor(150);
- for(const shot of shots){
+ for(const shot of ['cabin','cabinRear','cabinScreen']){
   await click('[data-view="cabin"]');await click('[data-cabin-view="'+shot+'"]');await page.locator('.studio').scrollIntoViewIfNeeded();
-  await verifyView(shot);
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
-  assert.ok(await page.locator('[data-cabin-view]').evaluateAll(buttons=>buttons.every(button=>{const bounds=button.getBoundingClientRect();return bounds.left>=0&&bounds.right<=innerWidth;})),'all four cabin tabs must fit the mobile viewport');
   await page.screenshot({path:'.tmp/cabin-qa/mobile-'+shot+'.png'});
  }
- assert.deepEqual(errors,[]);console.log('PASS: five seats, visible front/rear displays and whole steering rim, four DE/EN interior views with coherent active buttons, Home state, repeated view changes, charging after interior, mobile layout; no browser errors.');
+ assert.deepEqual(errors,[]);console.log('PASS: five seats, visible front/rear displays, DE/EN interior views, Home state, repeated view changes, charging after interior, mobile layout; no browser errors.');
 }finally{if(browser)await browser.close();await new Promise(done=>server.close(done));}
